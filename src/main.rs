@@ -15,6 +15,8 @@ use std::{
     collections::{HashMap, VecDeque},
     convert::TryFrom,
     sync::{Arc, Mutex},
+    time::Duration,
+    thread
 };
 
 fn better_theme() -> ColorfulTheme {
@@ -71,10 +73,12 @@ fn main() -> Result<()> {
     println!("Press Enter to stop streaming");
 
     streaming_device.start(capture_rate).unwrap();
-
-    Term::stdout().read_line().unwrap();
+    
+    thread::sleep(Duration::from_secs(20));
 
     streaming_device.stop();
+    
+    let avg_time_diff = 0;
 
     Ok(())
 }
@@ -286,18 +290,18 @@ fn display_capture_stats(
 
         term.clear_last_lines(data.len() + 1).unwrap();
 
-        println!(
-            "{} @ {}",
-            format!("{}", style("Streaming").bold()),
-            format!(
-                "{}",
-                style(format!(
-                    "{}S/s",
-                    metric::Signifix::try_from(rate_calc.get_value(samples)).unwrap()
-                ))
-                .bold()
-            )
-        );
+        // println!(
+        //     "{} @ {}",
+        //     format!("{}", style("Streaming").bold()),
+        //     format!(
+        //         "{}",
+        //         style(format!(
+        //             "{}S/s",
+        //             metric::Signifix::try_from(rate_calc.get_value(samples)).unwrap()
+        //         ))
+        //         .bold()
+        //     )
+        // );
 
         for (ch, _, first, unit) in data {
             let ch_col = get_colour(ch);
